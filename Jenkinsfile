@@ -1,10 +1,16 @@
 pipeline{
     agent any
+    environment{
+        name1="java"
+        name2="Jenkins"
+    }
     stages{
-        stage("THIS WILL PRINT BUILD NUMBER AND BUILD ID"){
+        stage("Concatination"){
             steps{
-                echo "$BUILD_NUMBER"
-                echo "$BUILD_ID"
+                script{
+                    Name = name1 +"with" +name2
+                }
+                echo "Welcome to $Name"
             }
         }
     }
