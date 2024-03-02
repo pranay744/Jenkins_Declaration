@@ -3,8 +3,8 @@ pipeline{
     stages{
         stage{
             steps{
-                echo $BUILD_NUMBER
-                echo $BUILD_ID
+                echo "$BUILD_NUMBER"
+                echo "$BUILD_ID"
             }
         }
     }
