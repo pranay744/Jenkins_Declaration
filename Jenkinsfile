@@ -1,8 +1,8 @@
 pipeline{
     agent any
     stages{
-        stage{
-            steps("THIS WILL PRINT BUILD NUMBER AND BUILD ID"){
+        stage("THIS WILL PRINT BUILD NUMBER AND BUILD ID"){
+            steps{
                 echo "$BUILD_NUMBER"
                 echo "$BUILD_ID"
             }
