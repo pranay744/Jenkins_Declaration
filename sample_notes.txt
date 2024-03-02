@@ -1,0 +1,2342 @@
+Jenkins Pipeline tutorial for Beginners with 100+ examples 
+
+Section 2: Pipeline Basics: 
+
+Introduction: 
+
+Steps, Stage, Stages, agent sections 
+
+Agent: Where (Master/Slave/Container..) we need to run our Pipeline script 
+
+Stages: 
+
+Contains sequence of stages. 
+
+At least one stage has to be there 
+
+Stage: 
+
+Defines Particular stage (build/test/Deploy) of our job. 
+
+At least one stage has to be there. 
+
+Name will be displays on the Jenkins Dashboard 
+
+Steps: 
+
+We need to write inside the stage directive. 
+
+Contains steps (commands/scripts) that we used in the build.  
+
+One steps directive should be there in Stage directive. 
+
+Stage Colours: 
+
+White: stage is not executing. 
+
+Green: The stage is executing and completed successfully 
+
+Blue Lines: currently the stage is executing. 
+
+Red Lines: The stage is failed 
+
+Red: If test/dev is successfully and deployment is failed which is coloured in red stage. 
+
+                    
+
+Comments: 
+
+Comments, Syntax: There are 2 types of Commands 
+
+Single Line comments starts with // 
+
+Multi Line Comments starts with: 
+
+                         /* 
+
+                          ------------ 
+
+                          ------------ 
+
+                           */ 
+
+Pipeline Syntax:  Declarative Pipeline Syntax: 
+
+Pipeline { 
+
+    	agent any 
+
+    	stages { 
+
+    	     stage ("Running Batch commands"){ 
+
+            	steps { 
+
+            		ls -ltr /etc/ansible 
+
+                    	          } 
+
+                          } 
+
+                 } 
+
+   }  
+
+ 
+
+Hello World: 
+
+Pipeline { 
+
+    agent any 
+
+    stages { 
+
+        stage ('hello') { 
+
+            steps { 
+
+                echo "hello world this is pranay" 
+
+            } 
+
+        }  
+
+    } 
+
+} 
+
+Batch Commands:  
+
+There are two types of batch commands 
+
+BAT cmd is used for windows systems 
+
+SH cmd is used for Linux systems 
+
+Another way to write a batch/shell multiple command 
+
+                        Graphical user interface, bubble chart
+
+Description automatically generated  
+
+Section 3: Variables: 
+
+What is the use of Variables: 
+
+Pre-defined Variables: 
+
+User defined Variables: 
+
+Scope of Variables: 
+
+User defined VS Pre-defined Variables: 
+
+Read Variables from JSON file: 
+
+Concatenation: 
+
+Variables: Variables are two types: 
+
+User defined Variables 
+
+Pre-Defined Variables 
+
+Pre-defined Variables: Pre-defined variables are already defined by Jenkins. Below URL provides list of pre-defined variables:	 
+
+http://34.248.232.98:8080/env-vars.html/ 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Print build Number"){ 
+
+            steps{ 
+
+                echo "$BUILD_NUMBER" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+User Defined Variables:  User defined variables will be mentioned in the Environment section. 
+
+pipeline{ 
+
+    agent any 
+
+    environment{ 
+
+        firstname="Pranysagar" 
+
+        Lastname="Reddy kadapanavenakta" 
+
+    } 
+
+    stages{ 
+
+        stage("Declaring user defind variables") { 
+
+            steps{ 
+
+                echo "$firstname" + "$Lastname" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ (Declaration Types): 
+
+Global(pipeline) Level: 
+
+Pipeline { 
+
+    agent any 
+
+    environment{ 
+
+        firstname="Pranysagar" 
+
+        Lastname="Reddy kadapanavenakta" 
+
+    } 
+
+Stage Level: 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Declaring user defind variables") { 
+
+            environment{ 
+
+                firstname="pranaysagar Reddy" 
+
+                Lastname="Kadapanavenkata" 
+
+            } 
+
+            steps{ 
+
+                echo "$firstname" + "$Lastname" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Script Level: 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Declaring user defind variables") { 
+
+            environment{ 
+
+                firstname="pranaysagar Reddy" 
+
+                Lastname="Kadapanavenkata" 
+
+            } 
+
+            steps{ 
+
+                script { 
+
+                    secondname="Himanshu Reddy" 
+
+                } 
+
+                echo "$firstname" + "$Lastname" 
+
+                echo "$secondname" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Scope of Variables: 
+
+If you take a same variable name with different value in the pipeline level and stage level, while executing Jenkins would consider stage level variables.  
+
+If you defined the same variable in the steps section, Jenkins would consider from step section variable. So, order for this is: 
+
+Scope of Variables: 
+
+Script (Script Level Variables) 
+
+Stages (Stage level Variables) 
+
+Pipeline (Global Level Variables) 
+
+User defined VS Pre-defined Variables: If we declare the pre-defined variable with user defined value, Jenkins always takes user defined value as priority. Please see the below example: - 
+
+Pipeline { 
+
+    agent any 
+
+    environment { 
+
+        BUILD_NUMBER="Pranay"   //Assigned user-defined value to the pre-defined value 
+
+    } 
+
+    Stages {  
+
+        Stage ("User defined variables") { 
+
+            Environment { 
+
+                name="Himanshu" 
+
+            } 
+
+            Steps { 
+
+                Script { 
+
+                    name="Rama" 
+
+                } 
+
+                echo "Tool Name is:- $name and ${env.name}" // declaring global environment variable in the echo statement.    
+
+                echo "Build Number is: $BUILD_NUMBER" // calling pre-defined variable. 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+Difference between single quotes and double quotes:  
+
+If you declare a variable in singe quotes, Jenkins considered as a string. 
+
+If you declare a variable in double quotes, Jenkins replace a value of the variable. 
+
+In Jenkins, always preferable to use double quotes. 
+
+Concatenation: 
+
+Process of Combining of 2 or more strings.  
+
+In Jenkins “+” is the concatenate operator. 
+
+pipeline{ 
+
+    agent any 
+
+    environment{ 
+
+        BUILD_NUMBER="Pranay"  //Assigned user-defined value to the pre-defined value 
+
+    } 
+
+    stages{ 
+
+        stage("User defined variables"){ 
+
+            environment{ 
+
+                name="Himanshu" 
+
+            } 
+
+            steps{ 
+
+                script{ 
+
+                    name="Rama" 
+
+                    name1=BUILD_NUMBER + " "+ name 
+
+                } 
+
+                echo "Tool Name is:- $name and ${env.name}" // declaring global environment variable in the echo statement.    
+
+                echo "Build Number is: $BUILD_NUMBER" // calling pre-defined variable. 
+
+                echo "$name1" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Section 4: Parameters:   Are used to pass the data dynamically (STBCPFD) 
+
+String: Used to get the value of simple text like a name 
+
+Text: This is used to pass the multiple lines of parameters as text. 
+
+Boolean: Yes or No 
+
+Choice:  drop down list 
+
+Password: hide the password  
+
+File: upload any file  
+
+Dry Run	:  
+
+Example:  
+
+pipeline{ 
+
+    agent any 
+
+    parameters{ 
+
+        string(name:'TOOL', defaultValue: 'Mr Jenkins', description: 'Who Should i Say hello to?') 
+
+        text(name:'DESC', defaultValue:'', description: 'Enter some information about the persion') 
+
+        booleanParam(name: 'SONOAR', defaultValue: true, description: 'Toggle this Value') 
+
+        choice(name:'STAGE',choices: "Build\ntest\nDeploy\n", description: 'delimiters within stage') 
+
+        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a passwod') 
+
+        file(name:"FILE", description: "Choose File") 
+
+    } 
+
+    stages{ 
+
+        stage("Tool"){ 
+
+            steps{ 
+
+                echo "$TOOL or ${params.TOOL} both are same" 
+
+            } 
+
+        } 
+
+        stage("Choice"){ 
+
+            steps{ 
+
+                echo "My choice is $STAGE" 
+
+            } 
+
+        } 
+
+        stage("SONAR"){ 
+
+            steps{ 
+
+                script{ 
+
+                    if(params.SONAR){ 
+
+                    echo "Sonar steps will execute" 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+        stage("Execuing Stages") { 
+
+            steps { 
+
+                script { 
+
+                    if(params.STAGE=='Build'){ 
+
+                        echo "The code is execuing in Build Environment" 
+
+                    } 
+
+                    else if(params.STAGE=='Test'){ 
+
+                        echo "The code is execuing in Test Environment" 
+
+                    } 
+
+                    else { 
+
+                        echo "The code is execuing in Deploy Environment" 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+ 
+
+Dry Run:-  
+
+Dry run is mainly used to avoid parameter build failure for the first time. 
+
+Section 5: Options Section:- 
+
+Retry: Before failing the job, will run the job again to specified times. 
+
+buildDiscarder 
+
+disableconcurrentbuild 
+
+timeout:  
+
+timestamps 
+
+ 
+
+Retry: Before failing the job, will run the job again to specified times. 
+
+pipeline{ 
+
+    agent any 
+
+     options{ 
+
+                retry(3) 
+
+            } 
+
+    stages{ 
+
+        stage("Executing Scripts"){ 
+
+            steps{ 
+
+                //sh 'chmod a+x -R ${env.WORKSPACE}' 
+
+                sh '/home/ansible/./sample.sh' 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+buildDiscarder: Used to delete old build Logs. It will keep all latest and deletes the old builds. 
+
+pipeline{ 
+
+    agent any 
+
+    options{ 
+
+        buildDiscarder(logRotator(numToKeepStr:'3')) 
+
+    } 
+
+    stages{ 
+
+        stage("Executing Scripts"){ 
+
+            steps{ 
+
+                sh '/home/ansible/./sample.sh' 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Disableconcurrentbuild: This function is used to avoid disable concurrent build. For instance, if we run the build for the first time, and immediately if we run the same job before completing the first job, 2 jobs will be created and that’s going to be more complicated. To avoid that, we will use this function.  
+
+  pipeline{ 
+
+    agent any 
+
+    options{ 
+
+        buildDiscarder(logRotator(numToKeepStr:'3')) 
+
+        disableConcurrentBuilds() 
+
+    } 
+
+    stages{ 
+
+        stage("Executing Scripts"){ 
+
+            steps{ 
+
+                sh '/home/ansible/./sample.sh' 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Sleep: This function is mainly used to sleep the state or function 5 sec.  
+
+Example: sleep 5 
+
+Timeout: Time set for particular build. This is mainly used to set the maximum execution time for each build. 
+
+    Syntax: Timeout(time:20, units:’MINUTES’) 
+
+   Timeout(time:20, units:’SECONDS’) 
+
+   Timeout(time:20, units:’HOURS’) 
+
+pipeline{ 
+
+    agent any 
+
+    options{ 
+
+        buildDiscarder(logRotator(numToKeepStr:'3')) 
+
+        disableConcurrentBuilds() 
+
+        timeout(time:2, unit:'SECONDS') 
+
+    } 
+
+    stages{ 
+
+        stage("Executing Scripts"){ 
+
+            steps{ 
+
+                sleep 10 
+
+                sh '/home/ansible/./sample.sh' 
+
+               // sleep 5 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Timestamps: Will add the time to the build process. 
+
+pipeline{ 
+
+    agent any 
+
+    options{ 
+
+        buildDiscarder(logRotator(numToKeepStr:'3')) 
+
+        disableConcurrentBuilds() 
+
+        //timeout(time:20, unit:'SECONDS') 
+
+        timestamps() 
+
+    } 
+
+    stages{ 
+
+        stage("Executing Scripts"){ 
+
+            steps{ 
+
+                sleep 10 
+
+                //sh '/home/ansible/./sample.sh' 
+
+               // sleep 5 
+
+                //sh "ls -ltr /home/ansible" 
+
+                //sleep 3 
+
+                sh "uptime" 
+
+                sleep 4 
+
+                sh "uname" 
+
+            } 
+
+        } 
+
+    } 
+
+}  
+
+ 
+
+   Section 6: Trigger builds: 
+
+Build Triggers: 
+
+Trigger jobs from pipeline script 
+
+How to trigger second build, even first build fails 
+
+How to change build result 
+
+Call a job by passing parameters 
+
+ 
+
+Trigger jobs from pipeline script: 
+
+Syntax: build(‘build name’) 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Triggering Multiple builds"){ 
+
+            steps{ 
+
+                build('Trigger_2') 
+
+                build('Trigger_Build') 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+How to Trigger Second Build, even first build fails: 
+
+Syntax: build(job:'Trigger_2’, propagate:false) 
+
+                                         Pipeline { 
+
+    agent any 
+
+    stages { 
+
+        stage ("Triggering Multiple builds"){ 
+
+            steps { 
+
+                build(job:'Trigger_2’, propagate:false) 
+
+                build('Trigger_Build') 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+How to change build result: 
+
+Syntax: jobresult = build(job: “job2”, propagate: false).result 
+
+   pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Triggering Multiple builds"){ 
+
+            steps{ 
+
+                script{ 
+
+                    jobresult=build(job:'Trigger_2',propagate: false).result 
+
+                    build('Trigger_Build') 
+
+                    if (jobresult == 'FAILURE'){ 
+
+                        currentBuild.result='UNSTABLE' 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+Call a job by passing parameters: 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+Section 7: Schedule Jobs: 
+
+Cron 
+
+Poll SCM 
+
+Cron:  
+
+Cron Tab will run the job depends up on the schedule we configured in the pipeline.  
+
+pipeline{ 
+
+    agent any 
+
+    triggers{ 
+
+        cron('* 12 20 9 *') 
+
+    } 
+
+    stages{ 
+
+        stage("Stage 1 for finding OS"){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh "uname" 
+
+                } 
+
+            } 
+
+        } 
+
+        stage("Stage 2 for finding uptime"){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh "uptime" 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+Poll SCM: 
+
+Whereas in the Poll SCM, the Jenkins Job’s will trigger only changes happens in the GIT Hub repository. 
+
+pipeline{ 
+
+    agent any 
+
+    triggers{ 
+
+       // cron('* 12 20 9 *') 
+
+        pollSCM('* 12 20 9 *') 
+
+    } 
+
+    stages{ 
+
+        stage("Stage 1 for finding OS"){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh "uname" 
+
+                } 
+
+            } 
+
+        } 
+
+        stage("Stage 2 for finding uptime"){ 
+
+            steps{ 
+
+                script{ 
+
+                    sh "uptime" 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+ 
+
+Section 8: Parallel 
+
+Can I user Multiple steps under same stage? 
+
+How to execute jobs at same time? 
+
+How to execute stages parallel? 
+
+What is the use of FailFast?  
+
+ 
+
+Can I use Multiple steps under same stage? 
+
+No, we can’t execute the multiple steps in a stage 
+
+In order to achieve this scenario, we must use parallel function in the pipeline. 
+
+pipeline{ 
+
+    agent any 
+
+    stages { 
+
+        stage ("Executing jobs parallelly"){ 
+
+            parallel { 
+
+                stage("Executing Job 1"){ 
+
+                    steps { 
+
+                        build('Job1') 
+
+                    } 
+
+                } 
+
+                Stage ("Executing Job 2"){ 
+
+                    Steps { 
+
+                        build('Job2') 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+What is the use of FailFast?   
+
+failFast: FailFast is the method where it would stop the pipeline if any job fails in the parallel pipeline.  
+
+         		pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Executing jobs parallelly"){ 
+
+            failFast true 
+
+            parallel{ 
+
+                stage("Executing Job 1"){ 
+
+                    steps{ 
+
+                        build('Job1') 
+
+                    } 
+
+                } 
+
+                stage("Executing Job 2"){ 
+
+                    steps{ 
+
+                        build('Job2') 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Section 9: POST: 
+
+Post will execute after the completion of Pipeline’s stages section contains the following blocks. All below blocks will execute in order. (ACFRAFSUUC) 
+
+Always 
+
+Changed 
+
+Fixed 
+
+Regression 
+
+Aborted 
+
+Failure 
+
+Success 
+
+Unstable 
+
+Unsuccessful  
+
+Cleanup 
+
+ 
+
+Always: Runs always, wont depend upon the build result 
+
+Changed: Runs only if current build status is changed when compare with previous. 
+
+Fixed: Current status is success and previous status is failed. 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Executing jobs parallelly"){ 
+
+            failFast true 
+
+            parallel{ 
+
+                stage("Executing Job 1"){ 
+
+                    steps{ 
+
+                        build('Job1') 
+
+                    } 
+
+                } 
+
+                stage("Executing Job 2"){ 
+
+                    steps{ 
+
+                        build('Job2') 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+    post{ 
+
+        always{ 
+
+            echo "This pipeline is successfully executed" 
+
+        } 
+
+        changed{ 
+
+            echo "The Build has updated and executed successfully" 
+
+        } 
+
+        fixed{ 
+
+            echo "The previous build is failed and this build is success congrats" 
+
+        } 
+
+    } 
+
+}  
+
+Regression: If current status is fail/Unstable/aborted and previous run is successful 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Executing jobs parallelly"){ 
+
+            //failFast true 
+
+            parallel{ 
+
+                stage("Executing Job 1"){ 
+
+                    steps{ 
+
+                        build('Job1') 
+
+                    } 
+
+                } 
+
+                stage("Executing Job 2"){ 
+
+                    steps{ 
+
+                        build('Job2') 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+    post{ 
+
+        always{ 
+
+            echo "This pipeline is successfully executed" 
+
+        } 
+
+        changed{ 
+
+            echo "The Build has updated and executed successfully" 
+
+        } 
+
+        fixed{ 
+
+            echo "The previous build is failed and this build is success congrats" 
+
+        } 
+
+        regression{ 
+
+            echo "Current status is failed/unstable/abort and previous is success" 
+
+        } 
+
+    } 
+
+} 
+
+Aborted: If the current status is aborted 
+
+Failure: Runs only if the current build status is failed. 
+
+Success: Current build is success 
+
+Unstable: Current build is unstable 
+
+Cleanup: Like always function, this will execute at every time in the last. For instance, if you want to remove workspace, delete files. 
+
+48. Post at stage level: 
+
+The post section will be defined and executed inside the stage so that mean, the post section will depends on that particular stage.  
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Executing jobs parallelly"){ 
+
+            //failFast true 
+
+            parallel{ 
+
+                stage("Executing Job 1"){ 
+
+                    steps{ 
+
+                        build('Job1') 
+
+                    } 
+
+                    post{ 
+
+                        always{ 
+
+                            echo "This pipeline is successfully executed" 
+
+                        } 
+
+                        changed{ 
+
+                            echo "The Build has updated and executed successfully" 
+
+                        } 
+
+                        fixed{ 
+
+                            echo "The previous build is failed and this build is success congrats" 
+
+                        } 
+
+                        regression{ 
+
+                            echo "Current status is failed/unstable/abort and previous is success" 
+
+                        } 
+
+                } 
+
+                stage("Executing Job 2"){ 
+
+                    steps{ 
+
+                        build('Job2') 
+
+                    } 
+
+                    post{ 
+
+                        always{ 
+
+                            echo "This pipeline is successfully executed" 
+
+                        } 
+
+                        changed{ 
+
+                            echo "The Build has updated and executed successfully" 
+
+                        } 
+
+                        fixed{ 
+
+                            echo "The previous build is failed and this build is success congrats" 
+
+                        } 
+
+                        regression{ 
+
+                            echo "Current status is failed/unstable/abort and previous is success" 
+
+                        } 
+
+                        success{ 
+
+                            echo "THis build executed successfully" 
+
+                        } 
+
+                        unstable{ 
+
+                            echo "this build is unstable" 
+
+                        } 
+
+                        cleanup{ 
+
+                            echo "This is similar to alwasy funciton" 
+
+                        } 
+
+} 
+
+            } 
+
+    } 
+
+} 
+
+ 
+
+Section 12: Other Examples: 
+
+Ansi color 
+
+Change BuildName and Description 
+
+Dir, cleanws 
+
+Write file Jenkins syntax 
+
+Maven example 
+
+Archive artifacts 
+
+Finger prints 
+
+Credentials 
+
+Check OS type 
+
+Trim String 
+
+ 
+
+Ansi Color: To print text in Ansi color, we need to install ansi plugin and change the color parameter in configuration section from Jenkins.  
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("For loop stage"){ 
+
+            steps{ 
+
+                ansiColor('xterm'){ 
+
+                    script{ 
+
+                        for (int i=0;i<=10;i++){ 
+
+                            println(i) 
+
+                        } 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Change Build Number to Name:  
+
+In this section, we will discuss about how to change the Build name and description of the build. There are mainly 2 functions will be used to change the Build Number and description.  
+
+currentBuild.displayName=”Deployment” 
+
+currnetBuild.description=”This build is used for deployment” 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("For loop stage"){ 
+
+            steps{ 
+
+                ansiColor('xterm'){ 
+
+                    script{ 
+
+                        currentBuild.displayName='Deployment' 
+
+                        currentBuild.description='This build is used for deployment' 
+
+                        for (int i=0;i<=10;i++){ 
+
+                            println(i) 
+
+                        } 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+ 
+
+Dir, cleanws: 
+
+DIR function is mainly used for creating a directory/folder in the pipeline.  Please see the below example. In case, if you try to create a file in the Pipeline, by default, the file will be stored inside the build folder. 
+
+  					pipeline{   // This pipeline will create a file in the default build directory 
+
+    agent any 
+
+    stages{ 
+
+        stage("Creating a file"){ 
+
+            steps{ 
+
+                sh ''' 
+
+                echo "Hi This is Pranaysagar Reddy" > file1.txt 
+
+                ''' 
+
+            } 
+
+        } 
+
+    } 
+
+}  
+
+ 
+
+ 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Creating a file"){ 
+
+            steps{ 
+
+                dir("Myfolder"){ 
+
+                sh ''' 
+
+                echo "Hi This is Pranaysagar Reddy" > file1.txt 
+
+                ''' 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+cleanWs:  
+
+CLEANWS is used to clean all temporary files once the build has been executed successfully. 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Creating a file"){ 
+
+            steps{ 
+
+                dir("Myfolder"){ 
+
+                sh ''' 
+
+                echo "Hi This is Pranaysagar Reddy" > file1.txt 
+
+                ''' 
+
+                } 
+
+            cleanWs()   /* this will delete you workspace once the build has been successfully executed.  
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Creating a file"){ 
+
+            steps{ 
+
+                dir("Myfolder"){ 
+
+                sh ''' 
+
+                echo "Hi This is Pranaysagar Reddy" > file1.txt 
+
+                ''' 
+
+                } 
+
+            } 
+
+        } 
+
+        Stage ("Moving the Directory"){ 
+
+            Steps { 
+
+                sh ''' 
+
+                sudo mv /var/lib/jenkins/workspace/DIR_Function/Myfolder /folder 
+
+                ''' 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Write file_Jenkins syntax: 
+
+Syntax: 
+
+writeFile file:’writefileDemo.txt’, text:”This is demo for writefile’ 
+
+archiveArtifacts ‘*.txt’ 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Creating a file"){ 
+
+            steps{ 
+
+                writeFile file:'writeFileDemo.txt', text:"Hello This is pranaysagar reddy" 
+
+                archiveArtifacts '*.txt' 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Maven Project: 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Stage-1"){ 
+
+            parallel{ 
+
+                stage("Fetching GIT Packages"){ 
+
+                    steps{ 
+
+                        git credentialsId: '9c19e1ec-daa3-41b0-9e50-25b254a78c0d', url: 'https://github.com/pranay744/maven_java_web_example.git' 
+
+                    } 
+
+                } 
+
+                stage("Executing Maven"){ 
+
+                    steps{ 
+
+                    //dir("Sample_Static_Web_Application"){ 
+
+                        sh ''' 
+
+                        mvn clean package 
+
+                           ''' 
+
+                    //} 
+
+                    }     
+
+                } 
+
+                stage("Installing Apache Server"){ 
+
+                   steps{ 
+
+                       sh ''' 
+
+                       sudo yum install httpd -y 
+
+                       sudo systemctl start httpd 
+
+                       sudo systemctl enable httpd 
+
+                       ''' 
+
+                   }  
+
+                } 
+
+            } 
+
+    }  } 
+
+} 
+
+archive artifacts and finger prints: 
+
+archiveArtifacts is mainly used to archive/Move/download the jar/war file into specific path after build is successful. See below simple example. 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Stage-1"){ 
+
+            parallel{ 
+
+                stage("Unstalling httpd packages"){ 
+
+                    steps{ 
+
+                        sh ''' 
+
+                        sudo systemctl stop httpd 
+
+                        sleep 10 
+
+                        sudo yum remove httpd -y 
+
+                        sleep 3 
+
+                        sudo rm -rf /var/lib/jenkins/workspace/Sample_Static_Web_Application* 
+
+                        ''' 
+
+                    } 
+
+                } 
+
+                stage("Fetching GIT Packages"){ 
+
+                    steps{ 
+
+                        git credentialsId: '9c19e1ec-daa3-41b0-9e50-25b254a78c0d', url: 'https://github.com/pranay744/maven_java_web_example.git' 
+
+                    } 
+
+                } 
+
+                stage("Executing Maven"){ 
+
+                    steps{ 
+
+                    //dir("Sample_Static_Web_Application"){ 
+
+                        sh ''' 
+
+                        mvn clean package 
+
+                           ''' 
+
+                    //} 
+
+                    }     
+
+                } 
+
+                stage("Installing Apache Server"){ 
+
+                   steps{ 
+
+                       sh ''' 
+
+                       sudo yum install httpd -y 
+
+                       sudo systemctl start httpd 
+
+                       sudo systemctl enable httpd 
+
+                       ''' 
+
+                   }  
+
+                   post{ 
+
+                    success{ 
+
+                        archiveArtifacts '/var/www/html/*.war' 
+
+                    } 
+
+                } 
+
+                } 
+
+FringerPrint:  
+
+FingerPrint mainly used to print the Check sum Identification number for every successful JAR/WAR file builds.  
+
+post{ 
+
+                    success{ 
+
+                        archiveArtifacts artifacts: '/var/www/html/*.war', fingerprint:true 
+
+                    } 
+
+                } 
+
+                } 
+
+ 
+
+Uses of Credentials Option: Using this option we can hide our username and password from the Developers/Testers during execution of build. See the below Example: 
+
+Syntax: Password_PSW=credentials("aws") 
+
+  Pipeline { 
+
+    agent any 
+
+    environment { 
+
+        Password_PSW=credentials("aws") 
+
+    } 
+
+    stages{ 
+
+        stage("Print the Credentials"){ 
+
+                steps{ 
+
+                    echo "$Password_PSW" 
+
+                } 
+
+        } 
+
+    } 
+
+} 
+
+CheckOS_AndExecuteSteps:    
+
+if(isUnix) 
+
+{ 
+
+Echo “This is Unix operating system 
+
+} 
+
+Trim(): 
+
+pipeline{ 
+
+    agent any 
+
+    environment{ 
+
+        name='Jenkins' 
+
+    } 
+
+    stages{ 
+
+        stage("Trim-2"){ 
+
+            steps{ 
+
+                println env.name[1..4] 
+
+                println env.name[-5..-1] 
+
+            } 
+
+        }     
+
+    } 
+
+} 
+
+ 
+
+Section 13: InPut Section: 
+
+Input Examples: 
+
+Wait for user input. 
+
+Wait for specific user to read input. 
+
+Execute Stage only if Specific user triggers the build: 
+
+pipeline{  //plugin: user build plugin 
+
+    agent any 
+
+    stages{ 
+
+        stage('Validating user'){ 
+
+            steps{ 
+
+                script{ 
+
+                    wrap([$class: 'BuildUser']) { 
+
+                    def user = env.BUILD_USER_ID 
+
+                    if(user == 'pranay573'){ 
+
+                        echo "This Build is execuing by $env.BUILD_USER" 
+
+                    }else{ 
+
+                        echo "You are not authorized user to execute this build"  
+
+                    } 
+
+                    } 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+68. Demo: User input 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("This parallel Execution"){ 
+
+            parallel{ 
+
+                stage("SonarQube execution"){ 
+
+                    steps{ 
+
+                        script{ 
+
+                         sonarPercentage = '50%'    
+
+                        } 
+
+                    } 
+
+                } 
+
+                stage("Executing build"){ 
+
+                 steps{ 
+
+                     script{ 
+
+                        input("The sonarPerentage is $sonarPercentage, do you want me to continue?")  
+
+                        echo "Continue............................" 
+
+                        echo "Build is successfull" 
+
+                     } 
+
+                 }    
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+69. Demo: Read Input From Specific user: 
+
+Section 16: WHEN 
+
+Run the step when Previous build is Success/Fail. 
+
+Run the step based on the Environment value. 
+
+Changelog 
+
+Changeset 
+
+Equals 
+
+NOT 
+
+Allof 
+
+Anyof 
+
+File exists 
+
+When file contains data. 
+
+Demo: equals and not equals: 
+
+pipeline{ 
+
+    agent any 
+
+    environment{ 
+
+        Tool="Jenkinddds" 
+
+    } 
+
+    stages{ 
+
+        stage("Equals"){ 
+
+            when{ 
+
+                equals expected:'Jenkins', actual:"$Tool" 
+
+            } 
+
+            steps{ 
+
+                echo "This is equals" 
+
+            } 
+
+        } 
+
+        stage("Not Equals"){ 
+
+            when { 
+
+                not { 
+
+                    environment name: 'Tool', value: 'Jenkins' 
+
+                } 
+
+            }  
+
+            steps{ 
+
+                echo "This is Not Equals" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Check previous build result and execute steps: 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Hello World"){ 
+
+            steps{ 
+
+                echo "Hello World" 
+
+            } 
+
+        } 
+
+        stage("Based on previous Result"){ 
+
+            when{ 
+
+                expression{ 
+
+                    currentBuild.getPreviousBuild().result=='SUCCESS' 
+
+                } 
+
+            } 
+
+            steps{ 
+
+                echo "Previous Build is success" 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+Steps based on commit messages:	 
+
+pipeline{ 
+
+ 
+ 
+
+    agent any 
+
+ 
+
+    stages{ 
+
+ 
+
+        stage("Build Stage"){ 
+
+ 
+
+            when{ 
+
+ 
+
+                changelog 'Build' 
+
+ 
+
+            } 
+
+ 
+
+            steps{ 
+
+ 
+
+                echo "Yes, change log contains Build Message..." 
+
+ 
+
+            } 
+
+ 
+
+        } 
+
+ 
+
+        stage("Deploy stage"){ 
+
+ 
+
+            when{ 
+
+ 
+
+                changelog "Deploy" 
+
+ 
+
+            } 
+
+ 
+
+        steps{ 
+
+ 
+
+            echo "This stage will use for Deploy" 
+
+ 
+
+        }     
+
+ 
+
+        } 
+
+ 
+
+    } 
+
+ 
+
+} 
+
+Steps based on Committed files: 
+
+Created 2 files (Python, Bash Scripting) and called them based on the commit message using below Jenkins pipeline.  
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Build Stage"){ 
+
+            when{ 
+
+                changelog 'Python' 
+
+            } 
+
+            steps{ 
+
+                echo "Hello Team, this is Python Program." 
+
+            } 
+
+        } 
+
+        stage("Deploy stage"){ 
+
+            when{ 
+
+                changelog "Shell Script" 
+
+            } 
+
+        steps{ 
+
+            sh ''' 
+
+            df -h 
+
+            echo "This is Bash scripting 
+
+            ''' 
+
+        }     
+
+        } 
+
+    } 
+
+} 
+
+82. Allof, Anyof: 
+
+Allof means, if you write any conditions inside the Allof function, all must be satisfied then below steps will execute. 
+
+Anyof means, if you write multiple conditions inside the Anyof, at least one must be satisfied, then below steps will be execute.		 
+
+ 
+
+pipeline{ 
+
+    agent any 
+
+    environment{ 
+
+        deployTo="dev" 
+
+        Tool="Jenkins" 
+
+    } 
+
+    stages{ 
+
+        stage("AllOf"){ 
+
+            when{ 
+
+                allOf{ 
+
+                    equals expected: "dev", actual: "$deployTO" 
+
+                    equals expected: "Jenkins", actual: "$Tool" 
+
+                } 
+
+            } 
+
+            steps{ 
+
+                echo "Both Conditions are satisfied" 
+
+                 } 
+
+        } 
+
+        stage("Anyof"){ 
+
+            when{ 
+
+                anyOf{ 
+
+                    equals expected: "Deploy", actual: "$deployTO" 
+
+                    equals expected: "Jenkins", actual: "$Tool" 
+
+                } 
+
+            } 
+
+        steps{ 
+
+                 echo "only one condition has satisfied" 
+
+                } 
+
+        } 
+
+    } 
+
+} 
+
+ 
+
+Execute stage if required string is matched in the file: 
+
+pipeline{ 
+
+    agent any 
+
+    stages{ 
+
+        stage("Execute a Stage when string is matching from the file"){ 
+
+            when{ 
+
+                expression{ 
+
+                    return 
+
+                    readFile('/git/simple.txt').contains('pranaysagar') 
+
+                } 
+
+            steps{ 
+
+                    echo "The search string is avaialble" 
+
+                } 
+
+            } 
+
+        } 
+
+    } 
+
+} 
+
+ 
