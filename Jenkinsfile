@@ -32,7 +32,7 @@ pipeline{
         }
         stage("Executing Sonar report"){
             steps{
-                mcn clean package sonar:sonar
+                sh 'mvn clean package sonar:sonar'
             }
         }
         stage("Upload into Nexus Repo"){
