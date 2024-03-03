@@ -1,7 +1,7 @@
 pipeline{
     agent any
     parameters{
-        choice(name='GIT',choice:['Dev','Stage','Prod'],description:'Please Enter your Git repo here:')
+        choice(name:'GIT',choice:['Dev','Stage','Prod'],description:'Please Enter your Git repo here:')
     }
     stages{
         stage("Executing Git repo"){
