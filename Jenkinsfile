@@ -1,47 +1,50 @@
-pipeline{ 
-    agent any 
-    parameters{ 
-        string(name:'TOOL', defaultValue: 'Mr Jenkins', description: 'Who Should i Say hello to?') 
-        text(name:'DESC', defaultValue:'', description: 'Enter some information about the persion') 
-        booleanParam(name: 'SONOAR', defaultValue: true, description: 'Toggle this Value') 
-        password(name: 'PASSWORD', defaultValue: 'SECRET', description: 'Enter a passwod') 
-        choice(name:'STAGE',choices: "Build\ntest\nDeploy\n", description: 'delimiters within stage') 
-        file(name:"FILE", description: "Choose File") 
-    } 
-    stages{ 
-        stage("Tool"){ 
-            steps{ 
-                echo "$TOOL or ${params.TOOL} both are same" 
-            } 
-        } 
-        stage("Choice"){ 
-            steps{ 
-                echo "My choice is $STAGE" 
-            } 
-        } 
-        stage("SONAR"){ 
-            steps{ 
-                script{ 
-                    if(params.SONAR){ 
-                    echo "Sonar steps will execute" 
-                    } 
-                } 
-            } 
-        } 
-        stage("Execuing Stages") { 
-            steps { 
-                script { 
-                    if(params.STAGE=='Build'){ 
-                        echo "The code is execuing in Build Environment" 
-                    } 
-                    else if(params.STAGE=='Test'){ 
-                        echo "The code is execuing in Test Environment" 
-                    } 
-                    else { 
-                        echo "The code is execuing in Deploy Environment" 
-                    } 
-                } 
-            } 
-        } 
-    } 
-} 
+pipeline{
+    agent any
+    parameters{
+        choice(name='GIT',choice:['Dev','Stage','Prod'],description:'Please Enter your Git repo here:')
+    }
+    stages{
+        stage("Executing Git repo"){
+            steps{
+                script{
+                    echo 'Exeruing GiT Repo.....'
+                    if(params.GIT=="Dev"){
+                        echo "Executing Dev Repo..."
+                        git branch: 'development', credentialsId: '94ec7097-5be2-4b2b-b5e7-e54f4f085314', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+                    }
+                    else if([params.GIT=="Stage"]){
+                        echo 'Executing Stage Repo...'
+                        git branch: 'stage', credentialsId: '94ec7097-5be2-4b2b-b5e7-e54f4f085314', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+                    }
+                    else{
+                        echo "Executing Dev Repo..."
+                        git credentialsId: '94ec7097-5be2-4b2b-b5e7-e54f4f085314', url: 'https://github.com/MithunTechnologiesDevOps/maven-web-application.git'
+                    }
+                }
+            }
+        }
+        stage("Executing Maven Build"){
+            steps{
+                script{
+                    mvn clean package
+                }
+            }
+        }
+        stage("Executing Sonar report"){
+            steps{
+                mcn clean package sonar:sonar
+            }
+        }
+        stage("Upload into Nexus Repo"){
+            steps{
+                echo "Uploding into Rep...."
+            }
+
+        }
+        stage("Deploy into continer"){
+            steps{
+                echo "Deploying into Continer"
+            }
+        }
+    }
+}
